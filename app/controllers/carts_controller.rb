@@ -10,7 +10,6 @@ class CartsController < ApplicationController
   # GET /carts/1
   # GET /carts/1.json
   def show
-
   end
 
   # GET /carts/new
@@ -30,9 +29,9 @@ class CartsController < ApplicationController
     respond_to do |format|
       if @cart.save
         format.html { redirect_to @cart, notice: 'Cart was successfully created.' }
-        format.json { render :show, status: :created, location: @cart }
+        format.json { render action: 'show', status: :created, location: @cart }
       else
-        format.html { render :new }
+        format.html { render action: 'new' }
         format.json { render json: @cart.errors, status: :unprocessable_entity }
       end
     end
@@ -44,9 +43,9 @@ class CartsController < ApplicationController
     respond_to do |format|
       if @cart.update(cart_params)
         format.html { redirect_to @cart, notice: 'Cart was successfully updated.' }
-        format.json { render :show, status: :ok, location: @cart }
+        format.json { head :no_content }
       else
-        format.html { render :edit }
+        format.html { render action: 'edit' }
         format.json { render json: @cart.errors, status: :unprocessable_entity }
       end
     end
@@ -58,14 +57,15 @@ class CartsController < ApplicationController
     @cart.destroy if @cart.id == session[:cart_id]
     session[:cart_id] = nil
     respond_to do |format|
-      format.html { redirect_to store_url,
-                                notice: 'Your cart is currently empty' }
+      format.html { redirect_to store_url }
       format.json { head :no_content }
     end
   end
 
+  # ...
   private
-  # Use callbacks to share common setup or constraints between actions.
+  # ...
+
   def set_cart
     @cart = Cart.find(params[:id])
   end
@@ -74,7 +74,6 @@ class CartsController < ApplicationController
   def cart_params
     params[:cart]
   end
-
   def invalid_cart
     logger.error "Attempt to access invalid cart #{params[:id]}"
     redirect_to store_url, notice: 'Invalid cart'
